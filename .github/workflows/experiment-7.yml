@@ -1,0 +1,35 @@
+name: Experiment 7 - Python Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r Experiment-07/requirements.txt
+
+      - name: Build - check Python syntax
+        run: python -m py_compile Experiment-07/calculator.py Experiment-07/test_calculator.py
+
+      - name: Run tests
+        run: pytest Experiment-07
